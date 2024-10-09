@@ -2,8 +2,8 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 8.0
+    # runtime-versions:
+    #   dotnet: 8.0
     commands:
       - echo Installing Docker...
       - sudo yum update -y
@@ -24,9 +24,9 @@ phases:
       - echo Cloning GitHub repository...
       - git clone https://github.com/eli78435/connector.git
       - cd connector
-      # - echo Logging in to Amazon ECR...
-      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin <your-ecr-repository-uri>
-      # - echo Pre-build completed.
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws/s3w1g3y7/edc/repo
+      - echo Pre-build completed.
 
   build:
     commands:
