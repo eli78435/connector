@@ -25,9 +25,10 @@ phases:
       - echo Cloning GitHub repository...
       - git clone https://github.com/eli78435/connector.git
       - cd connector
-      - echo Logging in to Amazon ECR...
-      - echo region $AWS_DEFAULT_REGION, repo $REPO_URL
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPO_URL
+      # - echo Logging in to Amazon ECR...
+      # - echo region $AWS_DEFAULT_REGION, repo $REPO_URL
+      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPO_URL
+      # - docker login $REPO_URL
       - echo Pre-build completed.
 
   build:
@@ -40,9 +41,9 @@ phases:
   post_build:
     commands:
       - echo Tagging Docker image...
-      - docker tag identity:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/identity:latest
+      - docker tag identity:latest $REPO_URL:latest
       - echo Pushing Docker image to Amazon ECR...
-      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/identity:latest
+      - docker push $REPO_URL:latest
       - echo Docker image pushed successfully.
 
 artifacts:
