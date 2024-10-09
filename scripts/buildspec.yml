@@ -12,6 +12,7 @@ phases:
       - nohup dockerd &  # Start Docker in the background
       # - sudo usermod -a -G docker $USER
       # - sudo chmod 666 /var/run/docker.sock
+      - while(! docker info > /dev/null 2>&1); do echo "Waiting for Docker to start..."; sleep 3; done  # Ensure Docker is running
       - echo Docker installation completed.
       - sudo yum install -y git
       - echo Git installation completed.
@@ -25,7 +26,7 @@ phases:
       - git clone https://github.com/eli78435/connector.git
       - cd connector
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws/s3w1g3y7/edc/repo
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPO_URL
       - echo Pre-build completed.
 
   build:
@@ -35,11 +36,13 @@ phases:
   #     - docker tag identity:latest <your-ecr-repository-uri>/<your-docker-image-name>:latest
       - echo Docker build image completed.
 
-  # post_build:
-  #   commands:
-  #     - echo Pushing Docker image to Amazon ECR...
-  #     - docker push <your-ecr-repository-uri>/<your-docker-image-name>:latest
-  #     - echo Build completed.
+  post_build:
+    commands:
+      - echo Tagging Docker image...
+      - docker tag identity:latest $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/identity:latest
+      - echo Pushing Docker image to Amazon ECR...
+      - docker push $ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/identity:latest
+      - echo Docker image pushed successfully.
 
 artifacts:
   files:
