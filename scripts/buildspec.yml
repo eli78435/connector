@@ -25,10 +25,8 @@ phases:
       - echo Cloning GitHub repository...
       - git clone https://github.com/eli78435/connector.git
       - cd connector
-      # - echo Logging in to Amazon ECR...
-      # - echo region $AWS_DEFAULT_REGION, repo $REPO_URL
-      # - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPO_URL
-      # - docker login $REPO_URL
+      - echo Logging in to Public ECR...
+      - docker login public.ecr.aws -u AWS -p $(aws ecr-public get-login-password --region $AWS_DEFAULT_REGION)
       - echo Pre-build completed.
 
   build:
