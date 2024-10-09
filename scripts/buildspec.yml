@@ -26,6 +26,7 @@ phases:
       - git clone https://github.com/eli78435/connector.git
       - cd connector
       - echo Logging in to Amazon ECR...
+      - echo region $AWS_DEFAULT_REGION, repo $REPO_URL
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $REPO_URL
       - echo Pre-build completed.
 
